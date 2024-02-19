@@ -3,9 +3,21 @@ include "config.php";
 include "header.php";
 include "navbar.php";
 
-$sql = "SELECT * FROM `users` ORDER BY username DESC";
+if(isset($_GET['page'])){
+    $page = $_GET['page'];
+}else{
+    $page = 1;
+}
+$limit = 3;
+$offset = ($page - 1) * $limit;
+
+$sql = "SELECT * FROM users ORDER BY date DESC LIMIT {$offset}, {$limit}";
 $result = mysqli_query($connection, $sql) or die("Query Failed");
 
+
+if (isset($_GET['msg'])) {
+    echo "<h4>Delete User Failed</h4>";
+} 
 ?>
 
 <div class="container">
@@ -49,8 +61,8 @@ $result = mysqli_query($connection, $sql) or die("Query Failed");
                                     <span class="text-muted">0<?php echo $row['number'] ?></span>
                                 </td>
                                 <td>
-                                    <span class="text-muted"><?php echo $row['date'] ?></span><br>
-                                    <span class="text-muted">10: 55 AM</span>
+                                    <span class="text-muted"><?php echo substr($row['date'], 0, 11) ?></span><br>
+                                    <span class="text-muted"><?php echo substr($row['date'], 12, 11) ?></span>
                                 </td>
                                 <td>
                                     <select class="form-control category-select" id="exampleFormControlSelect1">
@@ -67,19 +79,49 @@ $result = mysqli_query($connection, $sql) or die("Query Failed");
                                 </td>
                                 <td>
                                     <button type="button" class="btn btn-outline-info btn-circle btn-lg btn-circle"><i class="fa fa-key"></i> </button>
-                                    <button type="button" class="btn btn-outline-info btn-circle btn-lg btn-circle ml-2"><i class="fa fa-trash"></i> </button>
-                                    <button type="button" class="btn btn-outline-info btn-circle btn-lg btn-circle ml-2"><i class="fa fa-edit"></i> </button>
-                                    <button type="button" class="btn btn-outline-info btn-circle btn-lg btn-circle ml-2"><i class="fa fa-upload"></i> </button>
+                                    <a href="<?php echo $mainUrl .'admin/delete-user.php?id='. bin2hex($row['id']) ?>" type="button" class="btn btn-outline-info btn-circle btn-lg btn-circle ml-2"><i class="fa fa-trash"></i> </a>
+                                    <a href="<?php echo $mainUrl .'admin/edit-user.php?id='. bin2hex($row['id']) ?>" type="button" class="btn btn-outline-info btn-circle btn-lg btn-circle ml-2"><i class="fa fa-edit"></i> </a>
+                                    <a href="<?php echo $mainUrl .'admin/user-details.php?id='. bin2hex($row['id']) ?>" type="button" class="btn btn-outline-info btn-circle btn-lg btn-circle ml-2"><i class="fa fa-upload"></i> </a>
                                 </td>
                             </tr>
                            <?php 
                                 }
                             } else {
-                                echo "Database Data Not Found";
+                                echo "<h5 style='margin:1rem 0'>Database Data Not Found</h5>";
                             }
                            ?>
                         </tbody>
                     </table>
+                   <div class="d-flex justify-content-center">
+<!-- Pagination -->
+                    <?php  
+                    $paginationSql = "SELECT * FROM users";
+                    $paginationQuery = mysqli_query($connection, $paginationSql) or die("Pagination Query Failed");
+                    if (mysqli_num_rows($paginationQuery) > 0) {
+                        $totalRecord = mysqli_num_rows($paginationQuery); 
+                        $totalPage = ceil($totalRecord / $limit);
+
+                        if($page > 1){
+                            echo "<a href='{$mainUrl}admin/users.php?page=".($page - 1)."' type='button' class='btn btn-outline-success my-2 mx-1'>Prev</a>";
+                        }
+                        for ($i=1; $i < $totalPage; $i++) { 
+                            if ($i == $page) {
+                                $activePage = 'active';
+                            } else {
+                                $activePage = '';
+                            }
+                            echo "<a href='{$mainUrl}admin/users.php?page=$i' type='button' class='btn {$activePage} btn-outline-success my-2 mx-1'>{$i}</a>";
+                        }
+                        if($totalPage > $page){
+                            echo "<a href='{$mainUrl}admin/users.php?page=".($page + 1)."' type='button' class='btn btn-outline-success my-2 mx-1'>Next</a>";
+                        }
+
+                    } else {
+                        echo "<h5>Database Record Not Found</h5>";
+                    }
+                    ?>
+<!-- Pagination -->
+                   </div>
                 </div>
             </div>
         </div>

@@ -1,35 +1,29 @@
-<?php 
+<?php
 include "config.php";
 include "header.php";
 
-if(isset($_POST['submit'])){
+if (isset($_POST['submit'])) {
     $email = mysqli_real_escape_string($connection,$_POST['email']);
     $password = mysqli_real_escape_string($connection, md5($_POST['password']));
-   
-    $query = "SELECT username, password, role FROM users WHERE email='{$email}' AND password = '{$password}'";
-    $result = mysqli_query($connection, $query) or die("Query Failed");
 
-    if (mysqli_num_rows($result) > 0) {
-        while($row = mysqli_fetch_assoc($result)){
-            session_start();
-            $_SESSION['username'] = $row['username'];
-            $_SESSION['password'] = $row['password'];
-            $_SESSION['role'] = $row['role'];
-         
-            header("location: {$mainUrl}");
-        }
+   if(isset($_POST['role'])){
+    $role = mysqli_real_escape_string($connection,$_POST['role']);
+   } else{
+    header("location: {$mainUrl}admin/admin-create.php?msg=rnull");
+   }
+
+$query = "INSERT INTO users (email, password, role) VALUES ('{$email}', '{$password}', '{$role}')";
+$result = mysqli_query($connection, $query) or die("Query Failed");
+
+    if ($result) {
+        header("location: {$mainUrl}admin/");
     } else {
-        header("location: {$mainUrl}admin?msg=failed");
+        echo "<h3 style='color: red;'>Account Create Failed</h3>";
     }
-    
 }
 
-
-if(isset($_GET['msg']) == 'failed'){
-    echo "<h4 style='color:red'>Email & Password Not Match</h4>";
-}
-if(isset($_GET['lo'])){
-    echo "<h4 style='color:red'>Session Not Much Your Info</h4>";
+if(isset($_GET['msg']) == 'rnull'){
+    echo "<h3 style='color:red;'>Please Select Role</h3>";
 }
 ?>
 
@@ -50,6 +44,19 @@ if(isset($_GET['lo'])){
                                 <img src="../main_img/avatar6.png" alt="Andrew Jones" class="img-fluid rounded-circle" width="132" height="132">
                             </div>
                             <form action="<?php $_SERVER['PHP_SELF'] ?>" method="POST">
+                                <div class="form-group mt-3">
+                                    <div class="d-flex flex-row align-items-center mb-4">
+                                        <div class="form-outline flex-fill mb-0">
+                                            <select class="form-select" name="role" aria-label="Default select example">
+                                                <option disabled selected>Select Your Roll</option>
+                                                <option value="1">Admin</option>
+                                                <option value="2">Editor</option>
+                                                <option value="3">Commentor</option>
+                                                <option value="4">Viewer</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
                                 <div class="form-group">
                                     <label>Email</label>
                                     <input class="form-control form-control-lg" type="email" name="email" placeholder="Enter your email">
@@ -59,7 +66,7 @@ if(isset($_GET['lo'])){
                                     <input class="form-control form-control-lg" type="password" name="password" placeholder="Enter your password">
                                 </div>
                                 <div class="text-center mt-3">
-                                    <input type="submit" value="Sign in" name="submit" class="btn btn-lg btn-primary">
+                                    <input type="submit" value="Create Account" name="submit" class="btn btn-lg btn-outline-success">
                                 </div>
                             </form>
                         </div>
