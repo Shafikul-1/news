@@ -1,7 +1,11 @@
 <?php 
-include "config.php";
 include "header.php";
+include "config.php";
 include "navbar.php";
+
+if(($_SESSION['role'] == '3') || ($_SESSION['role'] == '4')){
+    header("location: {$mainUrl}admin/post.php");
+}
 
 if(isset($_GET['page'])){
     $page = $_GET['page'];
@@ -73,6 +77,8 @@ if (isset($_GET['msg'])) {
                                                 echo "<option selected>Commentor</option>";
                                             } else if ($row['role'] == 4) {
                                                 echo "<option selected>Viewer</option>";
+                                            } else if ($row['role'] == 1) {
+                                                echo "<option selected>Admin</option>";
                                             }
                                         ?>
                                     </select>

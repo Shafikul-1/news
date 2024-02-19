@@ -1,5 +1,9 @@
+<?php 
+session_start();
+?>
 <!doctype html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -9,9 +13,3 @@
 </head>
 
 <body>
-<div class="headerDesign">
-<h2 class="newsHeeding">News Pepper Website</h2>
-
-  </div>
-
-  <div class="navPor"></div>

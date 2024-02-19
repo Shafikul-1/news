@@ -1,13 +1,9 @@
 <?php 
 include "config.php";
-session_start();
+include "header.php";
+session_unset();
+session_destroy();
 
-if ($_SESSION['username']) {
-    session_destroy();
-    session_unset();
+header("location: {$mainUrl}admin/");
 
-    header("location: {$mainUrl}admin/");
-} else {
-    header("location: {$mainUrl}admin?lo=failed");
-}
 ?>
