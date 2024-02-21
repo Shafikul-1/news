@@ -1,9 +1,15 @@
 <?php
 include "config.php";
 include "header.php";
+
+$author = $_SESSION['id'];
 if (isset($_POST['submit'])) {
     $title = mysqli_real_escape_string($connection, $_POST['title']);
-    $category = mysqli_real_escape_string($connection, $_POST['category']);
+    if(empty(isset($_POST['category']))){
+        header("location: {$mainUrl}admin/add-post.php?msg=ctn");
+    }else{
+        $category = mysqli_real_escape_string($connection, $_POST['category']);
+    }
     $description = mysqli_real_escape_string($connection, $_POST['description']);
     $date = mysqli_real_escape_string($connection, $_POST['date']);
 
@@ -15,46 +21,43 @@ if (isset($_POST['submit'])) {
         $file_type = $_FILES['files']['type'];
         $file_ext = strtolower(end(explode('.', $_FILES['files']['name'])));
 
-        $extensions = array("jpeg", "jpg", "png");
+        $extensions = array("jpeg", "jpg", "png", "gif", "webp", "avif");
 
         if (in_array($file_ext, $extensions) === false) {
             $errors[] = "Your File extension not allowed, please choose a JPEG or PNG file.";
         }
 
-        if ($file_size > 2097152) {
-            $errors[] = 'File size must be excately 2 MB';
+        if ($file_size > 6291456) {
+            $errors[] = 'File size must be exactly 6 MB';
         }
 
+        date_default_timezone_set('Asia/Dhaka');
+        $dateCreate = date('d-m-y h_i_sA');
+
         if (empty($errors) == true) {
-            move_uploaded_file($file_tmp, "../upload/" . $file_name);
-            echo "Success";
+            if (!file_exists("../upload/$file_name")) {
+                move_uploaded_file($file_tmp, "../upload/$file_name");
+                $query = "INSERT INTO post (title, category, description, post_date, author, post_img ) VALUES ('{$title}',{$category},'{$description}','{$date}',{$author},'{$file_name}');";
+                $query .= "UPDATE category SET post = post + 1 WHERE category_id={$category}";
+                if (mysqli_multi_query($connection, $query)) {
+                    header("location: {$mainUrl}admin/post.php");
+                } else {
+                    echo "Query Failed";
+                }
+            } else {
+                move_uploaded_file($file_tmp, "../upload/$dateCreate$file_name");
+                $query = "INSERT INTO post (title, category, description, post_date, author, post_img ) VALUES ('{$title}',{$category},'{$description}','{$date}',{$author},'{$dateCreate}{$file_name}');";
+                $query .= "UPDATE category SET post = post + 1 WHERE category_id={$category}";
+                if (mysqli_multi_query($connection, $query)) {
+                    header("location: {$mainUrl}admin/post.php");
+                } else {
+                    echo "Query Failed";
+                }
+            }
         } else {
             print_r($errors);
         }
     }
-    $author = $_SESSION['id'];
-
-    // echo $title . "<br>";
-    // echo $category . "<br>";
-    // echo $description . "<br>";
-    // echo $file_name . "<br>";
-    // echo $file_tmp . "<br>";
-    // echo $file_ext . "<br>";
-    // echo $date . "<br>";
-
-    $query = "INSERT INTO post (title, category, description, post_date, author, post_img ) VALUES ('{$title}',{$category},'{$description}','{$date}',{$author},'{$file_name}');";
-    $query .= "UPDATE category SET post = post + 1 WHERE category_id={$category}";
-    // $result =  or die("Post Insert Query Failed");
-//     echo "<br>".$query."<br>";
-// die();
-    if (mysqli_multi_query($connection, $query)) {
-        echo "Query Success";
-        header("location: {$mainUrl}admin/post.php");
-    } else {
-        echo "Query FAiled";
-    }
-    
-
 } else {
     header("location: {$mainUrl}admin/add-post.php?msg=ifailed");
 }

@@ -39,5 +39,11 @@ CREATE TABLE post (
     post_date VARCHAR(100),
     author INT,
     post_img VARCHAR(400),
+    dir_num VARCHAR(100),
     PRIMARY KEY (post_id)
 )
+
+-- Join Query UserName & Author
+SELECT * FROM post 
+LEFT JOIN category ON post.category = category.category_id 
+LEFT JOIN users ON post.author = users.id;

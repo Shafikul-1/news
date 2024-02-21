@@ -2,6 +2,9 @@
 include "config.php";
 include "header.php";
 include "navbar.php";
+if (isset($_GET['msg']) == 'ctn'){
+  echo "<h3 style='color: red;'>Please Select Category</h3>";
+} 
 ?>
 
 <form class="mx-5 my-4 bg-secondary-subtle px-3 py-4" action="insert-post.php" method="post" enctype="multipart/form-data">
@@ -37,8 +40,8 @@ include "navbar.php";
       <input type="file" class="form-control" name="files" id="inputGroupFile01">
    </div>
    <?php
-      $dateTime = new DateTime("now", new DateTimeZone('Asia/Dhaka'));
-      echo "<input hidden type='text' name='date' value='{$dateTime->format("d M Y h:i:s A")}'>";
+   $dateTime = new DateTime("now", new DateTimeZone('Asia/Dhaka'));
+   echo "<input hidden type='text' name='date' value='{$dateTime->format("d M Y h:i:s A")}'>";
    ?>
    <input type="submit" value="Submit" name="submit" class="btn btn-outline-success mt-4 submitBtn">
 </form>

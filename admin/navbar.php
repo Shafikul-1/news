@@ -15,21 +15,16 @@ include "header.php";
           <a class="nav-link active" aria-current="page" href=" <?php echo $mainUrl ?>">Home</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href=" <?php echo $mainUrl.'admin/post.php' ?>">All Post</a>
+          <a class="nav-link" aria-current="page" href=" <?php echo $mainUrl . 'admin/post.php' ?>">All Post</a>
         </li>
         <?php if ($_SESSION['role'] == '1') { ?>
-          <li class=" nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-              Admin
-            </a>
-            <ul class="dropdown-menu">
-              <li><a class="dropdown-item" href="<?php echo $mainUrl ?>admin/users.php">Users</a></li>
-              <li><a class="dropdown-item" href="#">Post List</a></li>
-              <li>
-                <hr class="dropdown-divider">
-              </li>
-              <li><a class="dropdown-item" href="#">Something else here</a></li>
-            </ul>
+          <li class=" nav-item ">
+            <a class="nav-link" href="<?php echo $mainUrl ?>admin/users.php">Users</a>
+          </li>
+        <?php  } ?>
+        <?php if ($_SESSION['role'] == '1' || $_SESSION['role'] == '2') { ?>
+          <li class=" nav-item ">
+            <a class="nav-link" href="<?php echo $mainUrl ?>admin/category.php">Category</a>
           </li>
         <?php  } ?>
         <li class="nav-item">

@@ -1,10 +1,28 @@
-<?php 
+<?php
 include "config.php";
 include "header.php";
 include "navbar.php";
+
+if(isset($_GET['page'])){
+    $page = $_GET['page'];
+}else{
+    $page = 1;
+}
+$limit = 3;
+$offset = ($page - 1) * $limit;
+
+$joinQuery = "SELECT * FROM post 
+LEFT JOIN category ON post.category = category.category_id 
+LEFT JOIN users ON post.author = users.id ORDER BY post_id DESC LIMIT {$offset}, {$limit}";
+$joinResult = mysqli_query($connection, $joinQuery) or die("Join Query Failed");
+
+
+if(isset($_GET['msg']) == 'dfld'){
+    echo "<h3 style='color: red;'>Post Delete Failed</h3>";
+}
 ?>
 
-<div class="container">
+<div class="container-fluid">
     <div class="row">
         <div class="col-md-12">
             <div class="card">
@@ -19,75 +37,80 @@ include "navbar.php";
                                 <th scope="col" class="border-0 text-uppercase font-medium pl-4">#</th>
                                 <th scope="col" class="border-0 text-uppercase font-medium">image</th>
                                 <th scope="col" class="border-0 text-uppercase font-medium">Title</th>
+                                <th scope="col" class="border-0 text-uppercase font-medium">Category</th>
                                 <th scope="col" class="border-0 text-uppercase font-medium">Description</th>
                                 <th scope="col" class="border-0 text-uppercase font-medium">Publish Date</th>
-                                <th scope="col" class="border-0 text-uppercase font-medium">Role</th>
+                                <th scope="col" class="border-0 text-uppercase font-medium">Author</th>
                                 <th scope="col" class="border-0 text-uppercase font-medium">Manage</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <?php
-                            // if (mysqli_num_rows($result) > 0) {
-                            //     while ($row = mysqli_fetch_assoc($result)) {
-                            ?>
-                            <tr>
-                                <td class="pl-4"><?php echo 'id' ?></td>
-                                <td>
-                                    <h5 class="font-medium mb-0"><?php echo 'username' ?></h5>
-                                </td>
-                                <td>
-                                    <span class="text-muted">Visual Designer</span><br>
-                                </td>
-                                <td>
-                                    <span class="text-muted"><?php echo 'email' ?></span><br>
-                                </td>
-                                <td>
-                                    <span class="text-muted"><?php echo '12:00 43- 43- 2023' ?></span><br>
-                                </td>
-                                <td>
-                                    <p>Author</p>
-                                </td>
-                                <td>
-                                    <button type="button" class="btn btn-outline-info btn-circle btn-lg btn-circle"><i class="fa fa-key"></i> </button>
-                                    <a href="<?php echo $mainUrl . 'admin/delete-user.php?id=' . bin2hex($row['id']) ?>" type="button" class="btn btn-outline-info btn-circle btn-lg btn-circle ml-2"><i class="fa fa-trash"></i> </a>
-                                    <a href="<?php echo $mainUrl . 'admin/edit-user.php?id=' . bin2hex($row['id']) ?>" type="button" class="btn btn-outline-info btn-circle btn-lg btn-circle ml-2"><i class="fa fa-edit"></i> </a>
-                                    <a href="<?php echo $mainUrl . 'admin/user-details.php?id=' . bin2hex($row['id']) ?>" type="button" class="btn btn-outline-info btn-circle btn-lg btn-circle ml-2"><i class="fa fa-upload"></i> </a>
-                                </td>
-                            </tr>
-                            <?php
-                            //     }
-                            // } else {
-                            //     echo "<h5 style='margin:1rem 0'>Database Data Not Found</h5>";
-                            // }
-                            ?>
+                        <?php
+                        if (mysqli_num_rows($joinResult) > 0) {
+                            while ($row = mysqli_fetch_assoc($joinResult)) {
+                        ?>
+                        <tr>
+                        <td class="pl-4"><?php echo $row['post_id'] ?></td>
+                        <td>
+                            <img style="width: 100px; height:100px;" src="../upload/<?php echo $row['post_img'] ?>" alt="<?php echo $row['post_img'] ?>">
+                        </td>
+                        <td>
+                            <span class="text-muted"><?php echo substr($row['title'], 0, 60) ?>...</span><br>
+                        </td>
+                        <td>
+                            <span class='text-muted'><?php echo ucwords($row['category_name']) ?></span><br>
+                        </td>
+                        <td>
+                            <span class="text-muted"><?php echo substr($row['description'], 0, 100) ?>...</span><br>
+                        </td>
+                        <td>
+                            <span class="text-muted"><?php echo substr($row['post_date'], 0, 11) ?></span><br>
+                            <span class="text-muted"><?php echo substr($row['post_date'], 12, 11) ?></span>
+                        </td>
+                        <td>
+                            <span class="text-muted"><?php echo $row['username'] ?></span><br>
+                        </td>
+                        <td>
+                            <button type="button" class="btn btn-outline-info btn-circle btn-lg btn-circle"><i class="fa fa-key"></i> </button>
+                            <a href="<?php echo $mainUrl . 'admin/delete-post.php?pid=' . bin2hex($row['post_id']).'&cid='. bin2hex($row['category_id'])?>" type="button" class="btn btn-outline-info btn-circle btn-lg btn-circle ml-2"><i class="fa fa-trash"></i> </a>
+                            <a href="<?php echo $mainUrl . 'admin/edit-post.php?id=' . bin2hex($row['post_id']) ?>" type="button" class="btn btn-outline-info btn-circle btn-lg btn-circle ml-2"><i class="fa fa-edit"></i> </a>
+                            <a href="<?php echo $mainUrl . 'admin/view-post.php?id=' . bin2hex($row['post_id']) ?>" type="button" class="btn btn-outline-info btn-circle btn-lg btn-circle ml-2"><i class="fa fa-upload"></i> </a>
+                        </td>
+                        </tr>
+                        <?php
+                            }
+                        } else {
+                            echo "<h5 style='margin:1rem 0'>Database Data Not Found</h5>";
+                        }
+                        ?>
                         </tbody>
                     </table>
                     <div class="d-flex justify-content-center">
                         <!-- Pagination -->
                         <?php
-                        // $paginationSql = "SELECT * FROM users";
-                        // $paginationQuery = mysqli_query($connection, $paginationSql) or die("Pagination Query Failed");
-                        // if (mysqli_num_rows($paginationQuery) > 0) {
-                        //     $totalRecord = mysqli_num_rows($paginationQuery);
-                        //     $totalPage = ceil($totalRecord / $limit);
+                        $paginationSql = "SELECT * FROM post";
+                        $paginationQuery = mysqli_query($connection, $paginationSql) or die("Pagination Query Failed");
+                        if (mysqli_num_rows($paginationQuery) > 0) {
+                            $totalRecord = mysqli_num_rows($paginationQuery);
+                            $totalPage = ceil($totalRecord / $limit);
 
-                        //     if ($page > 1) {
-                        //         echo "<a href='{$mainUrl}admin/users.php?page=" . ($page - 1) . "' type='button' class='btn btn-outline-success my-2 mx-1'>Prev</a>";
-                        //     }
-                        //     for ($i = 1; $i < $totalPage; $i++) {
-                        //         if ($i == $page) {
-                        //             $activePage = 'active';
-                        //         } else {
-                        //             $activePage = '';
-                        //         }
-                        //         echo "<a href='{$mainUrl}admin/users.php?page=$i' type='button' class='btn {$activePage} btn-outline-success my-2 mx-1'>{$i}</a>";
-                        //     }
-                        //     if ($totalPage > $page) {
-                        //         echo "<a href='{$mainUrl}admin/users.php?page=" . ($page + 1) . "' type='button' class='btn btn-outline-success my-2 mx-1'>Next</a>";
-                        //     }
-                        // } else {
-                        //     echo "<h5>Database Record Not Found</h5>";
-                        // }
+                            if ($page > 1) {
+                                echo "<a href='{$mainUrl}admin/post.php?page=" . ($page - 1) . "' type='button' class='btn btn-outline-success my-2 mx-1'>Prev</a>";
+                            }
+                            for ($i = 1; $i < $totalPage; $i++) {
+                                if ($i == $page) {
+                                    $activePage = 'active';
+                                } else {
+                                    $activePage = '';
+                                }
+                                echo "<a href='{$mainUrl}admin/post.php?page=$i' type='button' class='btn {$activePage} btn-outline-success my-2 mx-1'>{$i}</a>";
+                            }
+                            if ($totalPage > $page) {
+                                echo "<a href='{$mainUrl}admin/post.php?page=" . ($page + 1) . "' type='button' class='btn btn-outline-success my-2 mx-1'>Next</a>";
+                            }
+                        } else {
+                            echo "<h5>Database Record Not Found</h5>";
+                        }
                         ?>
                         <!-- Pagination -->
                     </div>
