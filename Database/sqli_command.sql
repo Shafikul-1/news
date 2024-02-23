@@ -14,6 +14,9 @@ CREATE TABLE users (
     PRIMARY KEY (id)
 );
 
+-- Insert Users Table => admin user
+INSERT INTO users (username, email, password, number, gender, role)  VALUES ('admin', 'admin@gmail.com', 'admin@', '01756867220', '1', '1')
+
 -- Create Table Category 
 CREATE TABLE category (
     category_id INT AUTO_INCREMENT,
