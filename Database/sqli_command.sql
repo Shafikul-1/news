@@ -47,3 +47,24 @@ CREATE TABLE post (
 SELECT * FROM post 
 LEFT JOIN category ON post.category = category.category_id 
 LEFT JOIN users ON post.author = users.id;
+
+
+-- Settings Table
+CREATE TABLE setting (
+    id INT AUTO_INCREMENT,
+    title VARCHAR (100),
+    fav_icon VARCHAR(200),
+    logo VARCHAR(200),
+    footer_des varchar(200),
+    PRIMARY KEY (id)
+)
+
+-- Post Feed Back 
+CREATE TABLE feedback(
+    feedback_user_id INT AUTO_INCREMENT,
+    feedback_user_name VARCHAR(100),
+    feedback_user_email VARCHAR(200),
+    feedback_user_comment VARCHAR(500),
+    post_id INT,
+    PRIMARY KEY (feedback_user_id)
+)

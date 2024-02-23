@@ -74,7 +74,7 @@ if(isset($_GET['msg']) == 'dfld'){
                             <button type="button" class="btn btn-outline-info btn-circle btn-lg btn-circle"><i class="fa fa-key"></i> </button>
                             <a href="<?php echo $mainUrl . 'admin/delete-post.php?pid=' . bin2hex($row['post_id']).'&cid='. bin2hex($row['category_id'])?>" type="button" class="btn btn-outline-info btn-circle btn-lg btn-circle ml-2"><i class="fa fa-trash"></i> </a>
                             <a href="<?php echo $mainUrl . 'admin/edit-post.php?id=' . bin2hex($row['post_id']) ?>" type="button" class="btn btn-outline-info btn-circle btn-lg btn-circle ml-2"><i class="fa fa-edit"></i> </a>
-                            <a href="<?php echo $mainUrl . 'admin/view-post.php?id=' . bin2hex($row['post_id']) ?>" type="button" class="btn btn-outline-info btn-circle btn-lg btn-circle ml-2"><i class="fa fa-upload"></i> </a>
+                            <a href="<?php echo $mainUrl . 'view-post.php?id=' . $row['post_id'] ?>" type="button" class="btn btn-outline-info btn-circle btn-lg btn-circle ml-2"><i class="fa fa-upload"></i> </a>
                         </td>
                         </tr>
                         <?php

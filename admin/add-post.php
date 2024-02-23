@@ -2,9 +2,9 @@
 include "config.php";
 include "header.php";
 include "navbar.php";
-if (isset($_GET['msg']) == 'ctn'){
-  echo "<h3 style='color: red;'>Please Select Category</h3>";
-} 
+if (isset($_GET['msg']) == 'ctn') {
+   echo "<h3 style='color: red;'>Please Select Category</h3>";
+}
 ?>
 
 <form class="mx-5 my-4 bg-secondary-subtle px-3 py-4" action="insert-post.php" method="post" enctype="multipart/form-data">
@@ -49,9 +49,9 @@ if (isset($_GET['msg']) == 'ctn'){
 
 
 <style>
-   .submitBtn {
-      padding: 0.5rem 3rem;
-      font-weight: 700;
-      font-size: 20px;
+   .contentAbleDiv {
+      border: 4px solid blue;
+      max-height: 300px;
+      overflow: scroll;
    }
 </style>

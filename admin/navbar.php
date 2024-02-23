@@ -1,8 +1,19 @@
 <?php
 include "config.php";
-include "header.php";
+// include "header.php";
 ?>
-<h2 class="newsHeeding">News Pepper Website</h2>
+
+<h2 class="newsHeeding">  
+  <?php 
+  $settingQuery = "SELECT title FROM setting";
+  $settingResult = mysqli_query($connection, $settingQuery) or die("Setting Query Failed");
+  if(mysqli_num_rows($settingResult) > 0){
+    while($settingRow = mysqli_fetch_assoc($settingResult)){
+      echo $settingRow['title'];
+    }
+  }
+  ?>
+</h2>
 <nav class="navbar navbar-expand-lg bg-body-tertiary navbarManuel">
   <div class="container-fluid">
     <a class="navbar-brand" href="<?php echo $mainUrl ?>">Navbar</a>
@@ -30,7 +41,7 @@ include "header.php";
         <li class="nav-item">
           <?php
           if ($_SESSION['role'] == '1') {
-            echo "<a href='{$mainUrl}admin/admin.php' class='nav-link'>Admin</a>";
+            echo "<a href='{$mainUrl}admin/setting.php' class='nav-link'>Admin Setting</a>";
           } else if ($_SESSION['role'] == '2') {
             echo "<a href='{$mainUrl}admin/editor.php' class='nav-link'>Editor</a>";
           } else if ($_SESSION['role'] == '3') {

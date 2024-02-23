@@ -27,8 +27,8 @@ if (isset($_POST['submit'])) {
             $errors[] = "Your File extension not allowed, please choose a JPEG or PNG file.";
         }
 
-        if ($file_size > 6291456) {
-            $errors[] = 'File size must be exactly 6 MB';
+        if ($file_size > 10485760) {
+            $errors[] = 'File size must be exactly 10 MB';
         }
 
         date_default_timezone_set('Asia/Dhaka');
@@ -39,6 +39,8 @@ if (isset($_POST['submit'])) {
                 move_uploaded_file($file_tmp, "../upload/$file_name");
                 $query = "INSERT INTO post (title, category, description, post_date, author, post_img ) VALUES ('{$title}',{$category},'{$description}','{$date}',{$author},'{$file_name}');";
                 $query .= "UPDATE category SET post = post + 1 WHERE category_id={$category}";
+                // echo $query;
+                // die();
                 if (mysqli_multi_query($connection, $query)) {
                     header("location: {$mainUrl}admin/post.php");
                 } else {
@@ -48,6 +50,8 @@ if (isset($_POST['submit'])) {
                 move_uploaded_file($file_tmp, "../upload/$dateCreate$file_name");
                 $query = "INSERT INTO post (title, category, description, post_date, author, post_img ) VALUES ('{$title}',{$category},'{$description}','{$date}',{$author},'{$dateCreate}{$file_name}');";
                 $query .= "UPDATE category SET post = post + 1 WHERE category_id={$category}";
+                // echo $query;
+                // die();
                 if (mysqli_multi_query($connection, $query)) {
                     header("location: {$mainUrl}admin/post.php");
                 } else {

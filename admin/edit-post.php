@@ -41,6 +41,7 @@ if(mysqli_num_rows($result) > 0){
             }
             ?>
         </select>
+        <input type="hidden" hidden value="<?php echo $row['category_id'] ?>" name="oldCategory">
     </div>
     <div class="form-floating mt-3">
         <textarea class="form-control"  name="description" placeholder="Leave a comment here" id="floatingTextarea2" style="height: 100px">
